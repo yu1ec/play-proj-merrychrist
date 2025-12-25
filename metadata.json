@@ -1,0 +1,7 @@
+{
+  "name": "至臻奢华互动圣诞树",
+  "description": "一个高保真 3D 互动圣诞树 Web 应用，具有电影级视觉效果和手势控制功能。根据手部动作在混沌与形态之间动态切换。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
