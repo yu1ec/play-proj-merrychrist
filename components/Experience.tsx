@@ -18,7 +18,7 @@ const HandControlledCamera = () => {
 
   useFrame((state) => {
     if (handData.confidence > 0.5) {
-      // Map hand movement to camera offset
+      // 将手部移动映射到摄像机偏移
       const targetX = (handData.x - 0.5) * 8;
       const targetY = (0.5 - handData.y) * 4 + 4;
       
@@ -35,7 +35,7 @@ const Experience: React.FC = () => {
   return (
     <Canvas
       shadows
-      gl={{ antialias: false, stencil: false, alpha: false }}
+      gl={{ antialias: false, stencil: false, alpha: false, powerPreference: "high-performance" }}
     >
       <color attach="background" args={['#01120a']} />
       
@@ -60,20 +60,29 @@ const Experience: React.FC = () => {
       />
       <pointLight position={[-10, 5, -10]} intensity={1} color="#043927" />
 
-      {/* Main Christmas Tree Logic */}
+      {/* 圣诞树核心逻辑 */}
       <TreeCore />
 
-      {/* Decorative Ground */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -5, 0]} receiveShadow>
+      {/* 装饰性地面 - 修复频闪：位置下移并增加 polygonOffset */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -5.01, 0]} receiveShadow>
         <planeGeometry args={[100, 100]} />
-        <meshStandardMaterial color="#000805" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial 
+          color="#000805" 
+          metalness={0.8} 
+          roughness={0.2} 
+          polygonOffset
+          polygonOffsetFactor={1}
+          polygonOffsetUnits={1}
+        />
       </mesh>
       
+      {/* 接触阴影 - 放置在略高于地面的位置以避免 Z-Fighting */}
       <ContactShadows 
+        position={[0, -4.99, 0]}
         opacity={0.4} 
         scale={20} 
         blur={2} 
-        far={10} 
+        far={5} 
         resolution={256} 
         color="#000000" 
       />
@@ -82,7 +91,7 @@ const Experience: React.FC = () => {
 
       <HandControlledCamera />
 
-      {/* Post-processing for cinematic look */}
+      {/* 后期处理 */}
       <EffectComposer disableNormalPass>
         <Bloom 
           luminanceThreshold={0.8} 
